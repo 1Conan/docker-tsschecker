@@ -18,6 +18,21 @@ make install
 git -C /app clone --depth=1 --recursive https://github.com/1Conan/tsschecker
 cd /app/tsschecker
 
+cd tsschecker
+cat <<EOF | patch --ignore-whitespace
+--- tss.c
++++ tss.c
+@@ -100,7 +100,7 @@
+                tsserror("ERROR: Invalid ECID passed.\n");
+                return NULL;
+        }
+-       snprintf(ecid_string, ECID_STRSIZE, FMT_qu, (long long unsigned int)ecid);
++       snprintf(ecid_string, ECID_STRSIZE, "%llu", (long long unsigned int)ecid);
+        return ecid_string;
+ }
+EOF
+cd ..
+
 cat <<EOF | patch
 --- configure.ac
 +++ configure.ac
@@ -36,6 +51,6 @@ EOF
 bash ./configure
 make install
 
-apk del git libtool automake autoconf gcc make g++ libzip-dev patch file bash
+apk del git libtool automake autoconf gcc make g++ libzip-dev patch file
 
 rm -rf /app/tsschecker /app/libgeneral /app/libfragmentzip
