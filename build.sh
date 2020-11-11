@@ -3,7 +3,12 @@ mkdir -p /app
 
 apk add --no-cache git libtool automake autoconf gcc make g++ libzip-dev patch file bash
 
-apk add --no-cache libplist-dev curl-dev
+apk add --no-cache libplist-dev curl-dev readline-dev libusb-dev
+
+git -C /app clone --depth=1 --recursive https://github.com/libimobiledevice/libirecovery
+cd /app/libirecovery
+./autogen.sh
+make install
 
 git -C /app clone --depth=1 --recursive https://github.com/tihmstar/libgeneral
 cd /app/libgeneral
@@ -38,7 +43,7 @@ cat <<EOF | patch
 +++ configure.ac
 @@ -44,7 +44,7 @@
  
- PKG_CHECK_MODULES(libplist, libplist >= 2.0.0)
+ PKG_CHECK_MODULES(libplist, libplist >= 2.2.0)
  PKG_CHECK_MODULES(libcurl, libcurl >= 1.0)
 -PKG_CHECK_MODULES(libfragmentzip, libfragmentzip >= 48)
 +PKG_CHECK_MODULES(libfragmentzip, libfragmentzip >= 1)
@@ -51,6 +56,6 @@ EOF
 bash ./configure
 make install
 
-apk del git libtool automake autoconf gcc make g++ libzip-dev patch file
+apk del git libtool automake autoconf gcc make g++ libzip-dev patch file readline-dev
 
 rm -rf /app/tsschecker /app/libgeneral /app/libfragmentzip
